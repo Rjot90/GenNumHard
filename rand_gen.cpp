@@ -4,15 +4,18 @@
 #include <fstream>
 #include <ostream>
 
-static std::string generate(long gen, long range) {
+static std::string generate(long gen, long range, char c) {
     std::string r;
     std::ifstream urandom("/dev/urandom");
     if (!urandom)
         return NULL;
+    std::string genS = std::to_string(gen);
+    std::ofstream out("result_gen" + genS + ".txt" );
     
     bool have_print = false;
     unsigned int num = 0;
     int old_pr = 0;
+    long stack_max = 10000;
 
     for (long i = 0; i < gen; ++i)
     {
@@ -32,7 +35,14 @@ static std::string generate(long gen, long range) {
         r += std::to_string(res);
         if (i < gen - 1)
             r += ", ";
+        if (c == '1' && i == stack_max) {
+            out << r;
+            stack_max += 10000;
+            r = "";
+        }
     }
+    out << r;
+    out.close();
     std::cout << "\r" << "Generating... " << 100 << "%" << std::endl;
     return r;
 }
@@ -42,17 +52,11 @@ int main(int ac, char **av) {
         std::cout << "Usage: ./name [many num] [range max] [in file or not 1/0]";
         return 1;
     }
-
-    std::string r = generate(atol(av[1]), atol(av[2]));
-
-    if (av[3][0] == '1') {
-        std::string gen = av[1];
-        std::ofstream out("result_gen" + gen + ".txt" );
-        out << r;
-        out.close();
-    }
-    else {
+    std::string r;
+    if (av[3][0] == '1')
+        generate(atol(av[1]), atol(av[2]), av[3][0]);
+    else 
+        r = generate(atol(av[1]), atol(av[2]), av[3][0]);
         std::cout << r << std::endl;
-    }
     return 0;
 }

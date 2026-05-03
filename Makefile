@@ -1,7 +1,7 @@
 NAME := GenNumHard
 SRCS := rand_gen.cpp
 OBJS = $(SRCS:.cpp=.o)
-CC = c++ -Wall -Wextra -Werror -std=c++98 #-fsanitize=address,undefined -fno-omit-frame-pointer -g -O0
+CC = c++ -Wall -Wextra -Werror #-fsanitize=address,undefined -fno-omit-frame-pointer -g -O0
 RM = rm -f
 all: $(NAME)
 
